@@ -40,9 +40,8 @@ class Plex {
     function image($url, $width, $height) {
         header("Content-type: image/jpeg");
 
-        $url = $this->_local . $url;
         $str = sprintf("/photo/:/transcode?width=%d&height=%d&minSize=1&url=%s", $width, $height, urlencode($url));
-        $image = $this->_get($str);
+        $image = $this->_get($str, false);
         if ($image) {
             echo $image;
         }
@@ -91,9 +90,9 @@ class Plex {
         return $children;
     }
 
-    function _get($url) {
+    function _get($url, $useRemote=true) {
         $context = $this->_context();
-        $host = $this->_remote . $url;
+        $host = ($useRemote ? $this->_remote : $this->_local) . $url;
 
         return @file_get_contents($host, false, $context);
     }
